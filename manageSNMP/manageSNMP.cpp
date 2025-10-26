@@ -439,6 +439,7 @@ bool SnmpWalkRequest(HANDLE hSnmp, const std::vector<UINT>& baseOidArray) {
                 SnmpMgrOidToStr(&varBindList.list[0].name, &str_oid);
                 std::cout << "SNMP Error: " << SnmpErrorToString(errorStatus)
                     << " (code: " << errorStatus << ") " << "for OID: " << str_oid << std::endl;
+                std::cout << "Possible, it is last element.\n";
                 moreItems = false;
             }
         }
@@ -581,7 +582,7 @@ int main() {
     // Основной цикл запросов
     while (true) {
         std::string input;
-        std::cout << "\nEnter OID for GET, 'get_subtree <OID>' for GET SUBTREE, or 'quit' to exit: ";
+        std::cout << "\nEnter OID for GET, 'get_all <OID>' for GET SUBTREE, or 'quit' to exit: ";
         std::getline(std::cin, input);
 
         if (input == "quit" || input == "exit") {
@@ -593,8 +594,8 @@ int main() {
         }
 
         // Обработка WALK команды
-        if (input.back() != '0') {
-            std::string oidString = input;
+        if (input.find("get_all ") == 0) {
+            std::string oidString = input.substr(8);
 
             std::vector<UINT> oidArray;
             if (!ParseOIDString(oidString, oidArray)) {
